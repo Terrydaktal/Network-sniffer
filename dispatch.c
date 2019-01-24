@@ -17,9 +17,9 @@ void *tanalysis(void *targs) {
 	const unsigned char *packet = targuments->packet;  //unpacks the packet argument
 	int verbose = targuments->verbose;  //unpacks the verbose argument
 	analyse(packet, verbose);    //runs the thread analysis thread
-	pthread_exit(NULL);       //exits the thread
 	free(&targuments);       //frees the space used bu the targuments structure of the thread
 	free(&targs);            //frees the space used by the targ structure of the thread
+	pthread_exit(NULL);       //exits the thread
 	return NULL;
 }
 
@@ -29,6 +29,7 @@ void dispatch(const unsigned char *packet, int verbose) {
 	pthread_t thread; //declare the thread
 	struct args targs = {packet, verbose}; //set the thread arguments
 	pthread_create(&thread, NULL, &tanalysis, (void *)&targs);  //create a thread with the arguments
-	pthread_join(thread, (void **)NULL);  //waits for the thread to end
+	pthread_join(thread, (void **)NULL);  //waits on the thread object to terminate, similar to windows' WaitForSingleObject.
+	//the pthread_exit probably behaves similar to windows' ExitThread that will awaken any threads that are waiting on its object
 }
 
